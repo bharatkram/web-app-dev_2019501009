@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Webpage</title>
+        <!-- <link rel = "stylesheet" href = "styles.css"> -->
+        <style>
+            .pages {
+                background-image: url(images/yellow.jpg);
+            }
+            .topright {
+                position: absolute;
+                left: 90%;
+                font-size: 18px;
+                height: 120px;
+                width: 120px;
+            }
+            div.gallery {
+                margin: 5px;
+                border: 1px solid #ccc;
+                float: left;
+                width: 400px;
+            }
+            div.gallery:hover {
+                border: 1px solid #777;
+            }
+            div.gallery img {
+                position: relative;
+                width: 90%;
+                height: auto;
+            }
+            div.desc {
+                padding: none;
+                text-align: center;
+            }
+            #fixedbutton {
+                border: 2px ridge black;
+                background-color: black;
+                font-size: large;
+                color: white;
+                position: fixed;
+                bottom: 5%;
+                right: 5%;
+                padding: 5px;
+                border-radius: 10px;
+            }
+        </style>
+    </head>
+    <body class = "pages">
+        <img class = "topright" src = "images/logo1.png">
+        <div class="gallery">
+            <img src="images/3.jpg" alt="Cinque Terre" width= 50px height= 50px>
+        </div>
+          
+        <div class="gallery">
+            <img src="images/4.jpeg" alt="Forest" width="600" height="400">
+        </div>
+          
+        <div class="gallery">
+            <img src="images/5.jpg" alt="Northern Lights" width="600" height="400">
+        </div>
+          
+        <div class="gallery">
+            <img src="images/6.jpg" alt="Mountains" width="600" height="400">
+        </div>
+
+        <div class="gallery">
+            <img src="images/7.jpg" alt="Cinque Terre" width= 50px height= 50px>
+        </div>
+        
+        <div class="gallery">
+            <img src="images/8.png" alt="Forest" width="600" height="400">
+        </div>
+        
+        <div class="gallery">
+            <img src="images/1.jpg" alt="Northern Lights" width="600" height="400">
+        </div>
+        
+        <div class="gallery">
+            <img src="images/2.jfif" alt="Mountains" width="600" height="400">
+        </div>
+        <a id = "fixedbutton" href="file:///D:/wad/project0/index.html">Home</a>
+    </body>
+</html>

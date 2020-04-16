@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-image: url("{{ url_for('static', filename='wp2036897.jpg') }}");
+                background-size: cover;
+                background-attachment: fixed;
+            }
+            {% block styles %}{% endblock %}
+        </style>
+        <title>{{ headline }}</title>
+        <style>
+        </style>
+    </head>
+    <body>
+        <h1>{% block heading %}{% endblock %}</h1>
+        {% block body %}{% endblock %}
+    </body>
+</html>

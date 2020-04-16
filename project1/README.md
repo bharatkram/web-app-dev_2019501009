@@ -24,3 +24,4 @@ Designed the 'register' page in 3 forms -
 3) page if the registration is successful(act = 1)
 
 Task 3:
+Designed 'admin' page which gives the details of all the users in the database in a table.

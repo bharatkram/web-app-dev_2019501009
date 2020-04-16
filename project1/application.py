@@ -34,6 +34,7 @@ def register():
     else:
         name = request.form.get("usr")
         user = db.execute("SELECT username FROM users WHERE username = :name", {"name": name}).fetchone()
+        print(user)
         if user is None:
             psw = request.form.get("psw")
             db.execute("INSERT INTO users (username, password, time) VALUES (:name, :psw, :time)", {"name":name, "psw":psw, "time":datetime.datetime.now()})
@@ -43,4 +44,7 @@ def register():
         else:
             return render_template("register.html", act = -1)
 
-# @app.route("/")
+@app.route("/admin")
+def admin():
+    users = db.execute("SELECT * FROM users").fetchall()
+    return render_template("admin.html", users = users)

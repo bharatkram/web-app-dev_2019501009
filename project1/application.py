@@ -23,14 +23,21 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
-    return render_template(index.html)
+    return render_template("index.html")
 
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("register.html", flag = True)
+        return render_template("register.html", act = 0)
     else:
-        name = request.form.get("email")
-        msg = "Hello " + name
-        return render_template("register.html", flag = False, msg = msg)
+        name = request.form.get("usr")
+        user = db.execute("SELECT username FROM users WHERE username = :name", {"name": name}).fetchone()
+        if user is None:
+            psw = request.form.get("psw")
+            db.execute("INSERT INTO users (username, password) VALUES (:name, :psw)", {"name":name, "psw":psw})
+            print(f"Added user with username: {name}.")
+            db.commit()
+            return render_template("register.html", act = 1)
+        else:
+            return render_template("register.html", act = -1)

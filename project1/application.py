@@ -26,14 +26,11 @@ def index():
     return "Project 1: TODO"
 
 
-@app.route("/register")
+@app.route("/register", methods = ["GET", "POST"])
 def register():
-    return render_template("register.html")
-
-@app.route("/regcomplete", methods = ["GET", "POST"])
-def regcomplete():
     if request.method == "GET":
-        return "Please submit the form instead."
+        return render_template("register.html", flag = True)
     else:
-        name = request.form.get("username")
-        return f"Hello {name}!"
+        name = request.form.get("email")
+        msg = "Hello " + name
+        return render_template("register.html", flag = False, msg = msg)

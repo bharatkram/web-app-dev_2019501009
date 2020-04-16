@@ -4,6 +4,7 @@ from flask import Flask, session, render_template, request
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+import datetime
 
 app = Flask(__name__)
 
@@ -35,9 +36,11 @@ def register():
         user = db.execute("SELECT username FROM users WHERE username = :name", {"name": name}).fetchone()
         if user is None:
             psw = request.form.get("psw")
-            db.execute("INSERT INTO users (username, password) VALUES (:name, :psw)", {"name":name, "psw":psw})
+            db.execute("INSERT INTO users (username, password, time) VALUES (:name, :psw, :time)", {"name":name, "psw":psw, "time":datetime.datetime.now()})
             print(f"Added user with username: {name}.")
             db.commit()
             return render_template("register.html", act = 1)
         else:
             return render_template("register.html", act = -1)
+
+# @app.route("/")

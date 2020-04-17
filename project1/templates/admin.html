@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block styles %}
+
+    /* Add padding to containers */
+    .container {
+        padding: 16px;
+        background-color: white;
+        border-radius: 10px;
+        width: 60%;
+        margin: auto;
+    }
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 75%;
+        margin: auto;
+    }
+      
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+      
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+
+{% endblock %}
+
+{% block heading %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Page: Admin</h1>
+        <h3>The list of users is as follows.</h3>
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Time</th>
+                <th>Type</th>
+            </tr>
+            {% for user in users %}
+                <tr>
+                    {% for attr in user %}
+                        <td>{{ attr }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        <a href = "{{ url_for('index') }}" >Home</a>
+    </div>
+{% endblock %}

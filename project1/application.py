@@ -4,6 +4,7 @@ from flask import Flask, session, render_template, request
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+import datetime
 
 app = Flask(__name__)
 
@@ -23,14 +24,27 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
-    return render_template(index.html)
+    return render_template("index.html")
 
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("register.html", flag = True)
+        return render_template("register.html", act = 0)
     else:
-        name = request.form.get("email")
-        msg = "Hello " + name
-        return render_template("register.html", flag = False, msg = msg)
+        name = request.form.get("usr")
+        user = db.execute("SELECT username FROM users WHERE username = :name", {"name": name}).fetchone()
+        print(user)
+        if user is None:
+            psw = request.form.get("psw")
+            db.execute("INSERT INTO users (username, password, time) VALUES (:name, :psw, :time)", {"name":name, "psw":psw, "time":datetime.datetime.now()})
+            print(f"Added user with username: {name}.")
+            db.commit()
+            return render_template("register.html", act = 1)
+        else:
+            return render_template("register.html", act = -1)
+
+@app.route("/admin")
+def admin():
+    users = db.execute("SELECT * FROM users").fetchall()
+    return render_template("admin.html", users = users)

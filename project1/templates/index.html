@@ -1,7 +1,32 @@
 {% extends "layout.html" %}
 
-{% block styles %} {% endblock %}
+{% block styles %}
 
-{% block heading %}Welcome to project-1{% endblock %}
+    * {
+        box-sizing: border-box;
+    }
 
-{% block body %} {% endblock %}
+    /* Add padding to containers */
+    .container {
+        padding: 16px;
+        background-color: white;
+        border-radius: 10px;
+        width: 60%;
+        margin: auto;
+    }
+
+    .login {
+        position: relative;
+        left: 90%;
+    }
+
+{% endblock %}
+
+{% block heading %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <a class = "login" href = "{{ url_for('register') }}">LogIn/SignUp</a>
+        <h1>Welcome to project-1</h1>
+    </div>
+{% endblock %}

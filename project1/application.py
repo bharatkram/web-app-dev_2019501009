@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, url_for, redirect
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -38,7 +38,8 @@ def register():
         if user is not None:
             psw = request.form.get("psw")
             if user[1] == psw:
-                return render_template("userhome.html")
+                session["username"] = user[0]
+                return redirect(url_for('userhome'))
         return render_template("register.html", act = 0.1)
     else:
         name = request.form.get("usr")
@@ -60,6 +61,14 @@ def admin():
     return render_template("admin.html", users = users)
 
 
-@app.route("/userhome", methods = ["GET", "POST"])
+@app.route("/userhome")
 def userhome():
-    return "correct."
+    if session.get("username") is not None:
+        return render_template("userhome.html", act = 1)
+    return redirect(url_for('register'))
+
+
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    return redirect(url_for('index'))

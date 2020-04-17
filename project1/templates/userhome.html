@@ -1,7 +1,35 @@
 {% extends "layout.html" %}
 
-{% block styles %} {% endblock %}
+{% block styles %}
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Add padding to containers */
+    .container {
+        padding: 16px;
+        background-color: white;
+        border-radius: 10px;
+        width: 60%;
+        margin: auto;
+    }
+
+    h1 {
+        color: white;
+    }
+
+    .logout {
+        position: relative;
+        left: 90%;
+    }
+
+{% endblock %}
 
 {% block heading %}Welcome to project-1{% endblock %}
 
-{% block body %} {% endblock %}
+{% block body %}
+    <div class="container">
+        <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
+    </div>
+{% endblock %}

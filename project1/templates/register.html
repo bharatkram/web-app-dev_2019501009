@@ -66,22 +66,22 @@
     <div class="registration">
         <form action = "{{ url_for('register') }}" method = "POST">
             <div class="container">
-                    <h1>Register</h1>
-                    <p>Please fill in this form to create an account.</p>
-                    <hr>
+                <h1>Register</h1>
+                <p>Please fill in this form to create an account.</p>
+                <hr>
 
-                    <label for="usr"><b>Username</b></label>
-                    <input type="text" placeholder="Enter Username" name="usr" required>
+                <label for="usr"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="usr" required>
 
-                    <label for="psw"><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="psw" required>
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
 
-                    <hr>
-                    <input name="but" type = "submit" value = "Login" class="btn">
-                    <input name="but" type = "submit" value = "Register" class="btn">
-                </div>
-            </form>
-        </div>
+                <hr>
+                <input name="but" type = "submit" value = "Login" class="btn">
+                <input name="but" type = "submit" value = "Register" class="btn">
+            </div>
+        </form>
+    </div>
     {% elif act == 0.1 %}
         <div class="registration">
             <form action = "{{ url_for('register') }}" method = "POST">

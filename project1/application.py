@@ -31,6 +31,15 @@ def index():
 def register():
     if request.method == "GET":
         return render_template("register.html", act = 0)
+    elif request.form.get("but") == "Login":
+        name = request.form.get("usr")
+        user = db.execute("SELECT * FROM users WHERE username = :name", {"name": name}).fetchone()
+        print(user)
+        if user is not None:
+            psw = request.form.get("psw")
+            if user[1] == psw:
+                return render_template("userhome.html")
+        return render_template("register.html", act = 0.1)
     else:
         name = request.form.get("usr")
         user = db.execute("SELECT username FROM users WHERE username = :name", {"name": name}).fetchone()
@@ -44,7 +53,13 @@ def register():
         else:
             return render_template("register.html", act = -1)
 
+
 @app.route("/admin")
 def admin():
     users = db.execute("SELECT * FROM users").fetchall()
     return render_template("admin.html", users = users)
+
+
+@app.route("/userhome", methods = ["GET", "POST"])
+def userhome():
+    return "correct."

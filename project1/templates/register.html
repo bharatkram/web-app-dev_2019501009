@@ -35,18 +35,18 @@
     }
     
     /* Set a style for the submit button */
-    .registerbtn {
+    .btn {
         background-color: #4CAF50;
         color: white;
         padding: 16px 20px;
         margin: 8px 0;
         border: none;
         cursor: pointer;
-        width: 100%;
+        width: 49%;
         opacity: 0.9;
     }
     
-    .registerbtn:hover {
+    .btn:hover {
         opacity: 1;
     }    
 
@@ -63,34 +63,55 @@
 
 {% block body %}
     {% if act == 0 %}
-        <div class="registration">
-            <form action =  "/register" method = "POST">
-                <div class="container">
+    <div class="registration">
+        <form action = "{{ url_for('register') }}" method = "POST">
+            <div class="container">
                     <h1>Register</h1>
                     <p>Please fill in this form to create an account.</p>
                     <hr>
 
                     <label for="usr"><b>Username</b></label>
                     <input type="text" placeholder="Enter Username" name="usr" required>
-                
+
                     <label for="psw"><b>Password</b></label>
                     <input type="password" placeholder="Enter Password" name="psw" required>
 
                     <hr>
-                    <button class="registerbtn">Register</button>
+                    <input name="but" type = "submit" value = "Login" class="btn">
+                    <input name="but" type = "submit" value = "Register" class="btn">
+                </div>
+            </form>
+        </div>
+    {% elif act == 0.1 %}
+        <div class="registration">
+            <form action = "{{ url_for('register') }}" method = "POST">
+                <div class="container">
+                    <h4>Invalid username/password.</h4>
+                    <p>Please fill in this form to create an account.</p>
+                    <hr>
+
+                    <label for="usr"><b>Username</b></label>
+                    <input type="text" placeholder="Enter Username" name="usr" required>
+
+                    <label for="psw"><b>Password</b></label>
+                    <input type="password" placeholder="Enter Password" name="psw" required>
+
+                    <hr>
+                    <input name="but" type = "submit" value = "Login" class="btn">
+                    <input name="but" type = "submit" value = "Register" class="btn">
                 </div>
             </form>
         </div>
     {% elif act == 1 %}
         <div class="registration">
             <div class="container">
-                <h1 class = "success">Register Succesful!</h1>
-                <p>Please continue to the <a href = "login.html">login</a> page.</p>
+                <h1 class = "success">Registration Succesful!</h1>
+                <p>Please continue to <a href = "{{ url_for('register') }}">login</a>.</p>
             </div>
         </div>
     {% else %}
     <div class="registration">
-        <form action =  "/register" method = "POST">
+        <form action = "{{ url_for('register') }}" method = "POST">
             <div class="container">
                 <h1>Register</h1>
                 <h4>User name already exists. Please choose another.</h4>
@@ -99,12 +120,13 @@
 
                 <label for="usr"><b>Username</b></label>
                 <input type="text" placeholder="Enter Username" name="usr" required>
-            
+
                 <label for="psw"><b>Password</b></label>
                 <input type="password" placeholder="Enter Password" name="psw" required>
 
                 <hr>
-                <button class="registerbtn">Register</button>
+                <input name="but" type = "submit" value = "Login" class="btn">
+                <input name="but" type = "submit" value = "Register" class="btn">
             </div>
         </form>
     </div>

@@ -1,4 +1,4 @@
-# Project 1
+## Project 1
 
 Web Programming with Python and JavaScript
 
@@ -25,3 +25,14 @@ Designed the 'register' page in 3 forms -
 
 Task 3:
 Designed 'admin' page which gives the details of all the users in the database in a table.
+
+# 17-04
+Task 1:
+Added the login button adjacent to the register button on the /register page. Users can register or login from the same page and the same form. Changed the button to input tag from the form tag, and changed the form action from the form tag to this input tag.
+Login button posts the form inputs to the /auth page, whereas register button posts it to the same page.
+
+Task 2:
+Added the session variable on "username", it is None. Everytime a user logs in, it is changed to his name and when no user is logged in. When logged out, it is None again.
+
+Task 3:
+Read the contents of the books.csv file and uploaded in the database. ORM has been used. The class has been defined in the models.py file.

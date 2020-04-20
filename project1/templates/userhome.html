@@ -15,18 +15,21 @@
         margin: auto;
     }
 
-    .login {
+    h1 {
+        color: white;
+    }
+
+    .logout {
         position: relative;
         left: 90%;
     }
 
 {% endblock %}
 
-{% block heading %}{% endblock %}
+{% block heading %}Welcome to project-1{% endblock %}
 
 {% block body %}
     <div class="container">
-        <a class = "login" href = "{{ url_for('register') }}">LogIn/SignUp</a>
-        <h1>Welcome to project-1</h1>
+        <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
     </div>
 {% endblock %}

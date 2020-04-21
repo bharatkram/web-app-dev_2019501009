@@ -66,11 +66,18 @@ def admin():
     return render_template("admin.html", users = users)
 
 
-@app.route("/userhome")
+@app.route("/userhome", methods = ["GET", "POST"])
 def userhome():
-    if session.get("username") is not None:
-        return render_template("userhome.html", act = 1)
-    return redirect(url_for('register'))
+    if session.get("username") is None:
+        return redirect(url_for('register'))
+    if request.method == "POST":
+        sel = request.form.get("sel")
+        inp = request.form.get("str")
+
+        sql = f"SELECT title, isbn FROM books WHERE {sel} LIKE '%{inp}%'"
+        books = db.execute(sql).fetchall()
+        return render_template("userhome.html", books=books)
+    return render_template("userhome.html")
 
 
 @app.route("/logout")

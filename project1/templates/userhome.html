@@ -10,6 +10,7 @@
     .container {
         padding: 16px;
         background-color: white;
+        opacity: 0.9;
         border-radius: 10px;
         width: 60%;
         margin: auto;
@@ -24,12 +25,72 @@
         left: 90%;
     }
 
+    .search {
+        position: fixed;
+        top: 3%;
+        right: 1%;
+        padding: 16px;
+        background-color: white;
+        opacity: 0.9;
+        border-radius: 10px;
+        width: 18%;
+        margin: auto;
+        float: left;
+    }
+
+    /* Full-width input fields */
+    input {
+        padding: 5px;
+        margin: 5px;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    /* Set a style for the submit button */
+    .btn {
+        margin: 5px;
+        cursor: pointer;
+        opacity: 0.8;
+    }
+
+    .btn:hover {
+        opacity: 1;
+    }
+
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        margin: 0 0 20px 0;
+        text-align: center;
+        background-color: #ccc;
+        border-radius: 5px;
+    }
+
 {% endblock %}
 
-{% block heading %}Welcome to project-1{% endblock %}
+{% block heading %}{% endblock %}
 
 {% block body %}
     <div class="container">
         <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
+        <h2>Welcome to project-1</h2>
+        {% for book in books %}
+            <a href="{{ url_for('register') }}">
+                <div style="cursor:pointer;" class="card">
+                    <h3>{{ book[0] }}</h3>
+                    <p>{{ book[1] }}</p>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    <div class="search">
+        <h2>Search</h2>
+        <form action = "{{ url_for('userhome') }}" method = "POST">
+            <input type="text" placeholder="Search.." name="str" style="width:80%" required>
+            <label for="title" style="white-space:nowrap"> <input type="radio" name="sel" value="title" checked> Title</label>
+            <label for="author" style="white-space:nowrap"> <input type="radio" name="sel" value="author"> Author</label>
+            <label for="isbn" style="white-space:nowrap"> <input type="radio" name="sel" value="isbn"> ISBN</label>
+            <input name="but" type="submit" class="btn">
+        </form>
     </div>
 {% endblock %}

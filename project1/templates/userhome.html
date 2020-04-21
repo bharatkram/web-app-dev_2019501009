@@ -58,6 +58,7 @@
     }
 
     .card {
+        width: 100%;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         padding: 16px;
         margin: 0 0 20px 0;
@@ -75,12 +76,12 @@
         <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
         <h2>Welcome to project-1</h2>
         {% for book in books %}
-            <a href="{{ url_for('register') }}">
-                <div style="cursor:pointer;" class="card">
+            <form action="{{ url_for('bookpage') }}">
+                <button style="cursor:pointer;" class="card" type="submit" value={{book[1]}}>
                     <h3>{{ book[0] }}</h3>
                     <p>{{ book[1] }}</p>
-                </div>
-            </a>
+                </button>
+            </form>
         {% endfor %}
     </div>
     <div class="search">

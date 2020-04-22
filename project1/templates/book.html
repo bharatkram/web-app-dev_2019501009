@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block styles %}
+    .container {
+        padding: 16px;
+        background-color: white;
+        border-radius: 10px;
+        width: 60%;
+        margin: auto;
+    }
+
+{% endblock %}
+
+{% block heading %}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class = "bookdetails">
+            <h1>{{title}}</h1>
+            <h4>Author: {{author}}<br>Published Year:{{year}}</h4>
+        </div>
+    </div>
+{% endblock %}

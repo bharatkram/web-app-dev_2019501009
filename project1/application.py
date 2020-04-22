@@ -28,46 +28,49 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/register", methods = ["GET", "POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("register.html", act = 0)
+        return render_template("register.html", act=0)
     else:
         name = request.form.get("usr")
-        user = db.execute("SELECT username FROM users WHERE username = :name", {"name": name}).fetchone()
+        user = db.execute("SELECT username FROM users WHERE username = :name", {
+                          "name": name}).fetchone()
         print(user)
         if user is None:
             psw = request.form.get("psw")
-            db.execute("INSERT INTO users (username, password, time) VALUES (:name, :psw, :time)", {"name":name, "psw":psw, "time":datetime.datetime.now()})
+            db.execute("INSERT INTO users (username, password, time) VALUES (:name, :psw, :time)", {
+                       "name": name, "psw": psw, "time": datetime.datetime.now()})
             print(f"Added user with username: {name}.")
             db.commit()
-            return render_template("register.html", act = 1)
+            return render_template("register.html", act=1)
         else:
-            return render_template("register.html", act = -1)
+            return render_template("register.html", act=-1)
 
 
-@app.route("/auth", methods = ["GET", "POST"])
+@app.route("/auth", methods=["GET", "POST"])
 def auth():
     if request.method == "GET":
         return redirect(url_for('register'))
     name = request.form.get("usr")
-    user = db.execute("SELECT * FROM users WHERE username = :name", {"name": name}).fetchone()
+    user = db.execute(
+        "SELECT * FROM users WHERE username = :name", {"name": name}).fetchone()
     print(user)
     if user is not None:
         psw = request.form.get("psw")
         if user[1] == psw:
             session["username"] = user[0]
             return redirect(url_for('userhome'))
-    return render_template("register.html", act = 0.1)
+    return render_template("register.html", act=0.1)
 
 
 @app.route("/admin")
 def admin():
     users = db.execute("SELECT * FROM users").fetchall()
-    return render_template("admin.html", users = users)
+    return render_template("admin.html", users=users)
 
 
-@app.route("/userhome", methods = ["GET", "POST"])
+@app.route("/userhome", methods=["GET", "POST"])
 def userhome():
     if session.get("username") is None:
         return redirect(url_for('register'))
@@ -81,7 +84,6 @@ def userhome():
         if books == []:
             empty = True
         return render_template("userhome.html", books=books, empty=empty)
-    lis = [x for i in range(5)]
     return render_template("userhome.html")
 
 
@@ -91,6 +93,9 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route("/bookpage", methods = ["GET", "POST"])
+@app.route("/bookpage", methods=["GET", "POST"])
 def bookpage():
-    return request.form.get("isbn")
+    isbn = request.form.get("isbn")
+    book = db.execute(
+        "SELECT title, author, pub_year FROM books WHERE isbn= :isbn", {"isbn": isbn}).fetchall()
+    return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2])

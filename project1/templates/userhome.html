@@ -10,7 +10,6 @@
     .container {
         padding: 16px;
         background-color: white;
-        opacity: 0.9;
         border-radius: 10px;
         width: 60%;
         margin: auto;
@@ -31,7 +30,6 @@
         right: 1%;
         padding: 16px;
         background-color: white;
-        opacity: 0.9;
         border-radius: 10px;
         width: 18%;
         margin: auto;
@@ -74,12 +72,11 @@
 {% block body %}
     <div class="container">
         <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
-        <h2>Welcome to project-1</h2>
+        <h2>Search Results</h2>
         {% for book in books %}
-            <form action="{{ url_for('bookpage') }}">
-                <button style="cursor:pointer;" class="card" type="submit" value={{book[1]}}>
-                    <h3>{{ book[0] }}</h3>
-                    <p>{{ book[1] }}</p>
+            <form action="{{ url_for('bookpage') }}" method="POST">
+                <button style="cursor:pointer;" class="card" type="submit" name="isbn" value={{book[1]}}>
+                    <h2>{{ book[0] }}</h2>
                 </button>
             </form>
         {% endfor %}

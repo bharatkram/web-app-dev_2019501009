@@ -74,7 +74,7 @@ def userhome():
         sel = request.form.get("sel")
         inp = request.form.get("str")
 
-        sql = f"SELECT title, isbn FROM books WHERE {sel} LIKE '%{inp}%'"
+        sql = f"SELECT title, isbn, author FROM books WHERE {sel} LIKE '%{inp}%'"
         books = db.execute(sql).fetchall()
         return render_template("userhome.html", books=books)
     return render_template("userhome.html")
@@ -86,6 +86,6 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route("/bookpage")
+@app.route("/bookpage", methods = ["GET", "POST"])
 def bookpage():
-    return "Hello"
+    return request.form.get("isbn")

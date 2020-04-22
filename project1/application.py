@@ -5,6 +5,7 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 import datetime
+import random
 
 app = Flask(__name__)
 
@@ -66,14 +67,30 @@ def admin():
     return render_template("admin.html", users = users)
 
 
-@app.route("/userhome")
+@app.route("/userhome", methods = ["GET", "POST"])
 def userhome():
-    if session.get("username") is not None:
-        return render_template("userhome.html", act = 1)
-    return redirect(url_for('register'))
+    if session.get("username") is None:
+        return redirect(url_for('register'))
+    if request.method == "POST":
+        sel = request.form.get("sel")
+        inp = request.form.get("str")
+
+        sql = f"SELECT title, isbn, author FROM books WHERE {sel} LIKE '%{inp}%'"
+        books = db.execute(sql).fetchall()
+        empty = False
+        if books == []:
+            empty = True
+        return render_template("userhome.html", books=books, empty=empty)
+    lis = [x for i in range(5)]
+    return render_template("userhome.html")
 
 
 @app.route("/logout")
 def logout():
     session.pop("username", None)
     return redirect(url_for('index'))
+
+
+@app.route("/bookpage", methods = ["GET", "POST"])
+def bookpage():
+    return request.form.get("isbn")

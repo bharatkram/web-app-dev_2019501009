@@ -73,13 +73,19 @@
     <div class="container">
         <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
         <h2>Search Results</h2>
-        {% for book in books %}
+        {% if not empty %}
+            {% for book in books %}
             <form action="{{ url_for('bookpage') }}" method="POST">
                 <button style="cursor:pointer;" class="card" type="submit" name="isbn" value={{book[1]}}>
                     <h2>{{ book[0] }}</h2>
+                    <p>Written By</p>
+                    <h3>{{ book[2] }}</h3>
                 </button>
             </form>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <h3>No books match the request.</h3>
+        {% endif %}
     </div>
     <div class="search">
         <h2>Search</h2>

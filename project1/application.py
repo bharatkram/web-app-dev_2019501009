@@ -5,6 +5,7 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 import datetime
+import random
 
 app = Flask(__name__)
 
@@ -76,7 +77,11 @@ def userhome():
 
         sql = f"SELECT title, isbn, author FROM books WHERE {sel} LIKE '%{inp}%'"
         books = db.execute(sql).fetchall()
-        return render_template("userhome.html", books=books)
+        empty = False
+        if books == []:
+            empty = True
+        return render_template("userhome.html", books=books, empty=empty)
+    lis = [x for i in range(5)]
     return render_template("userhome.html")
 
 

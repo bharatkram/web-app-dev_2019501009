@@ -8,6 +8,10 @@
         width: 60%;
         margin: auto;
     }
+    img{
+        padding:6px;
+        width: 20%;
+    }
 
 {% endblock %}
 
@@ -17,6 +21,7 @@
     <div class="container">
         <div class = "bookdetails">
             <h1>{{title}}</h1>
+            <img src = {{imageurl}} alt = {{title}}>
             <h4>Author: {{author}}<br>Published Year:{{year}}</h4>
         </div>
     </div>

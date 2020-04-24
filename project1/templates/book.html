@@ -8,7 +8,12 @@
         width: 60%;
         margin: auto;
     }
-    
+
+    img{
+        padding:6px;
+        width: 20%;
+    }
+
 
 {% endblock %}
 
@@ -17,6 +22,7 @@
 {% block body %}
     <div class="container">
         <div class = "bookdetails">
+
             <h2>{{title}}</h2>
             <img src = {{imageurl}} alt = {{title}}>
             <h6>Author: {{author}}<br>Published Year:{{year}}</h6>
@@ -46,6 +52,11 @@
             <div class="form-group col-sm">
                 <button class="btn btn-success" type="submit">Submit</button>
             </div>
+
+            <h1>{{title}}</h1>
+            <img src = {{imageurl}} alt = {{title}}>
+            <h4>Author: {{author}}<br>Published Year:{{year}}</h4>
+
         </div>
     <div id="userReviews">
         <h4>Reviews from existing users</h4>

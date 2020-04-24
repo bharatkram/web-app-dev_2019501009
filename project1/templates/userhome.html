@@ -26,7 +26,7 @@
 
     .search {
         position: fixed;
-        top: 3%;
+        top: 12%;
         right: 1%;
         padding: 16px;
         background-color: white;
@@ -74,8 +74,8 @@
         <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
         <h2>Search Results</h2>
         {% if not empty %}
-            {% for book in books %}
-            <form action="{{ url_for('bookpage') }}" method="POST">
+            {% for book in books: %}
+            <form action="/bookpage/{{book[1]}}">
                 <button style="cursor:pointer;" class="card" type="submit" name="isbn" value={{book[1]}}>
                     <h2>{{ book[0] }}</h2>
                     <p>Written By</p>

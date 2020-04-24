@@ -1,7 +1,8 @@
 import os
 
-from flask import Flask, session, render_template, request, url_for, redirect
+from flask import Flask, session,flash, render_template, request, url_for, redirect
 from flask_session import Session
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 import datetime
@@ -23,6 +24,7 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -30,6 +32,8 @@ def index():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if session.get("username") != None:
+        return redirect(url_for('userhome'))
     if request.method == "GET":
         return render_template("register.html", act=0)
     else:
@@ -92,12 +96,55 @@ def logout():
     session.pop("username", None)
     return redirect(url_for('index'))
 
-
-@app.route("/bookpage", methods=["GET", "POST"])
-def bookpage():
-    isbn = request.form.get("isbn")
+@app.route("/bookpage",methods=["GET"])
+@app.route("/bookpage/<isbn>", methods=["GET", "POST"])
+def bookpage(isbn):
+    # isbn = request.form.get("isbn")
+    # print("here",isbn)
     book = db.execute(
+
+            "SELECT title, author, pub_year FROM books WHERE isbn= :isbn", {"isbn": isbn}).fetchall()
+    print(book)
+    imageurl = "http://covers.openlibrary.org/b/isbn/"+isbn+"-M.jpg"
+    row =db.execute("SELECT id FROM books WHERE isbn = :isbn",
+                        {"isbn": isbn}).fetchall()
+    # print(row)
+    if request.method == "POST":
+        username = session['username']
+        rating = request.form.get('rating')
+        review = request.form.get('comment')
+        rev = db.execute("SELECT * FROM revi where username = :username and isbn= :isbn",{"username":username,"isbn":isbn})
+        rev1=rev.fetchall()
+        # print(rev1)
+        if rev.rowcount == 1:
+            rev = db.execute("SELECT * FROM revi where isbn= :isbn",{"username":username,"isbn":isbn}).fetchall()
+            flash("You have already submitted review",'warning')
+            print("inside if")
+            print(rev)
+            return redirect("/bookpage/"+isbn)
+       
+        rating = int(rating)    
+        db.execute("Insert INTO revi(username,isbn,rating,review) VALUES \
+        (:username,:isbn,:rating,:review)",
+        {
+            "username": username, "isbn": isbn,"rating":rating,"review":review})
+        db.commit()
+        flash("Review submitted")
+        rev = db.execute("SELECT * FROM revi where isbn= :isbn",{"username":username,"isbn":isbn}).fetchall()
+        print("if return")
+        print(rev)
+        return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2],review = rev,imageurl =imageurl)
+    else:
+        username = session['username']
+        rev = db.execute("SELECT * FROM revi where isbn= :isbn",{"username":username,"isbn":isbn}).fetchall()
+        print("inside else")
+        # print(book)
+        # print(rev)
+        # flash("SUccessful")
+        return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2],review = rev,imageurl =imageurl)
+
         "SELECT title, author, pub_year FROM books WHERE isbn= :isbn", {"isbn": isbn}).fetchall()
     imageurl = "http://covers.openlibrary.org/b/isbn/"+isbn+"-M.jpg"
     print(imageurl)
     return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2], imageurl=imageurl)
+

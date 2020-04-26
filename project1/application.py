@@ -143,8 +143,8 @@ def bookpage(isbn):
         # flash("SUccessful")
         return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2],review = rev,imageurl =imageurl)
 
-        "SELECT title, author, pub_year FROM books WHERE isbn= :isbn", {"isbn": isbn}).fetchall()
-    imageurl = "http://covers.openlibrary.org/b/isbn/"+isbn+"-M.jpg"
-    print(imageurl)
-    return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2], imageurl=imageurl)
+        # "SELECT title, author, pub_year FROM books WHERE isbn= :isbn", {"isbn": isbn}).fetchall()
+    # imageurl = "http://covers.openlibrary.org/b/isbn/"+isbn+"-M.jpg"
+    # print(imageurl)
+    # return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2], imageurl=imageurl)
 

@@ -74,8 +74,10 @@ o1 = {a:1,b:{c:2}}
 o2 = {a:1,b:{c:2}}
 o3 = {a:1,b:{c:3}}
 o4 = {a:1,b:{d:2}}
+o5 = {a:1,e:{c:2}}
 
 console.log("\n***************\nTest for objects containing objects")
 console.log(deepEqual(o1, o2))
 console.log(deepEqual(o1, o3))
 console.log(deepEqual(o1, o4))
+console.log(deepEqual(o1, o5))

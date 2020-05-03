@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, session,flash, render_template, request, url_for, redirect
+from flask import Flask, session,flash,jsonify,render_template, request, url_for, redirect
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
@@ -103,7 +103,7 @@ def bookpage(isbn):
     # print("here",isbn)
     book = db.execute(
 
-            "SELECT title, author, pub_year FROM books WHERE isbn= :isbn", {"isbn": isbn}).fetchall()
+            "SELECT title, author, pub_year,isbn FROM books WHERE isbn= :isbn", {"isbn": isbn}).fetchall()
     print(book)
     imageurl = "http://covers.openlibrary.org/b/isbn/"+isbn+"-M.jpg"
     row =db.execute("SELECT id FROM books WHERE isbn = :isbn",
@@ -133,7 +133,7 @@ def bookpage(isbn):
         rev = db.execute("SELECT * FROM revi where isbn= :isbn",{"username":username,"isbn":isbn}).fetchall()
         print("if return")
         print(rev)
-        return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2],review = rev,imageurl =imageurl)
+        return render_template("book.html", isbn = book[0][3],title=book[0][0], author=book[0][1], year=book[0][2],review = rev,imageurl =imageurl)
     else:
         username = session['username']
         rev = db.execute("SELECT * FROM revi where isbn= :isbn",{"username":username,"isbn":isbn}).fetchall()
@@ -141,10 +141,57 @@ def bookpage(isbn):
         # print(book)
         # print(rev)
         # flash("SUccessful")
-        return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2],review = rev,imageurl =imageurl)
+        return render_template("book.html", isbn = book[0][3],title=book[0][0], author=book[0][1], year=book[0][2],review = rev,imageurl =imageurl)
 
         # "SELECT title, author, pub_year FROM books WHERE isbn= :isbn", {"isbn": isbn}).fetchall()
     # imageurl = "http://covers.openlibrary.org/b/isbn/"+isbn+"-M.jpg"
     # print(imageurl)
     # return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2], imageurl=imageurl)
 
+@app.route('/api/submit_review',methods = ['POST'])
+
+def submit_review():
+    data = dict(request.args)
+    u_name,isbn,rating,review = data['username'],data['isbn'],data['rating'],data['review']
+    book = db.execute(
+            "SELECT title, author, pub_year FROM books WHERE isbn= :isbn", {"isbn": isbn}).fetchall()
+    if book is None:
+        return jsonify({'status':400})
+    try:
+        db.session.add(revi(username = u_name,isbn = isbn,rating = rating, review = review))
+        db.session.commit()
+        return jsonify({'status':200})
+    except:
+        return jsonify({'status':500})
+
+@app.route("/api/search", methods=["POST"])
+def search():
+    query = request.form.get("str")
+    cat = request.form.get("sel")
+    print(query, cat)
+
+    sql = f"SELECT title, isbn, author FROM books WHERE {cat} LIKE '%{query}%'"
+    books = db.execute(sql).fetchall()
+
+    if books == []:
+        return jsonify({'status': 222})
+
+    print(books)
+    return jsonify({'books': [dict(book) for book in books], 'status': 200})
+
+
+@app.route("/api/book_page/<isbn>", methods=["POST"])
+def bookPageApi(isbn):
+    book = db.execute("SELECT title, isbn, author, pub_year FROM books WHERE isbn= :isbn", {
+                      "isbn": isbn}).fetchall()
+    # username = session['username']
+    rev = db.execute("SELECT * FROM revi where isbn= :isbn",{"isbn":isbn}).fetchall()
+    if book == []:
+        return jsonify({'status': 222})
+    else:
+        l =[]
+        for i in rev:
+            l.append(dict(i))
+        print(dict(book[0]))
+        print(dict(rev[0]))
+        return jsonify({'book': dict(book[0]),'reviews':l, 'status': 200})

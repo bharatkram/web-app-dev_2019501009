@@ -182,6 +182,10 @@
                     document.querySelector('#container').appendChild(row)
 
                     addrev(isbn)
+                } else {
+                        var para = document.createElement('h4')
+                        para.innerHTML = "No books found."
+                        document.querySelector('#container').appendChild(para)
                 }
 
             }

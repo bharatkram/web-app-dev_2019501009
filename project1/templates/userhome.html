@@ -63,6 +63,7 @@
         text-align: center;
         background-color: #ccc;
         border-radius: 5px;
+        cursor: pointer;
     }
 
 {% endblock %}
@@ -73,6 +74,13 @@
         function myfunction(val) {
             console.log(val)
             sel = val
+        }
+
+        function clear() {
+            var heading = document.createElement("h2")
+            heading.innerHTML = "Search Results"
+            document.getElementById("container").innerHTML = ""
+            document.getElementById("container").appendChild(heading)
         }
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -88,6 +96,7 @@
                 console.log("here")
 
                 request.onload = () => {
+                    clear()
 
                     const data = JSON.parse(request.responseText)
                     console.log(data.status)
@@ -115,7 +124,9 @@
                             document.getElementById("container").appendChild(btn)
                         }
                     } else {
-                        document.querySelector('#container').innerHTML = "No books found."
+                        var para = document.createElement('P')
+                        para.innerHTML = "No books found."
+                        document.querySelector('#container').appendChild(para)
                     }
                 }
 
@@ -127,7 +138,6 @@
 
 {% block body %}
     <div id="container">
-        <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
         <h2>Search Results</h2>
         {% if not empty %}
             {% for book in books: %}

@@ -157,8 +157,8 @@ def search():
     sql = f"SELECT title, isbn, author FROM books WHERE {cat} LIKE '%{query}%'"
     books = db.execute(sql).fetchall()
 
-    # if books == []:
-    #     return jsonify()
+    if books == []:
+        return jsonify({'status':222})
     
     print(books)
     return jsonify({'books': [dict(book) for book in books], 'status':200})

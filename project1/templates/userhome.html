@@ -118,7 +118,7 @@
                             btn.classList.add('card')
                             btn.value = books[i].isbn
                             btn.onclick = function() {
-                                console.log(this.value)
+                                bookPage(this.value)
                             }
                             
                             document.getElementById("container").appendChild(btn)
@@ -133,6 +133,58 @@
                 return false
             }
         })
+        
+        function bookPage(isbn){
+            const request = new XMLHttpRequest();
+            request.open("POST", "/api/book_page/" + isbn);
+            request.send()
+            request.onload = () => {
+                const response = JSON.parse(request.responseText)
+                console.log(response)
+                book = response.book
+                if (response["status"] == 200) {
+                    const row = document.createElement("div")
+                    row.setAttribute("class", "row");
+                    
+                    let overlay = document.createElement("div")
+                    overlay.setAttribute("class", "overlay")
+                    overlay.style.padding = "25px"
+
+                    let title = document.createElement("h3")
+                    title.setAttribute("class", "title")
+                    title.innerHTML = `${book.title}`
+
+                    let author = document.createElement("h6")
+                    author.setAttribute("class", "text")
+                    author.innerHTML = `Author: ${book.author}`
+
+                    let year = document.createElement("p")
+                    year.setAttribute("class", "text")
+                    year.innerHTML = `Year: ${book.pub_year}`
+
+
+                    imageurl = "http://covers.openlibrary.org/b/isbn/"+book.isbn+"-M.jpg"
+
+
+                    let im = document.createElement("IMG");
+                    im.setAttribute("src", imageurl);
+                    im.setAttribute("width", "40%");
+                    im.setAttribute("alt", book.title);
+
+                    overlay.appendChild(title)
+                    overlay.appendChild(im)
+                    overlay.appendChild(author)
+                    overlay.appendChild(year)
+
+                    row.appendChild(overlay)
+
+                    document.getElementById("container").innerHTML = ""
+                    document.querySelector('#container').appendChild(row)
+                }
+
+            }
+        }
+
     </script>
 {% endblock %}
 

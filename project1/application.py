@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, session,flash, render_template, request, url_for, redirect
+from flask import Flask, session,flash, render_template, request, url_for, redirect, jsonify
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
@@ -148,3 +148,17 @@ def bookpage(isbn):
     # print(imageurl)
     # return render_template("book.html", title=book[0][0], author=book[0][1], year=book[0][2], imageurl=imageurl)
 
+@app.route("/api/search", methods = ["POST"])
+def search():
+    query = request.form.get("str")
+    cat = request.form.get("sel")
+    print(query, cat)
+
+    sql = f"SELECT title, isbn, author FROM books WHERE {cat} LIKE '%{query}%'"
+    books = db.execute(sql).fetchall()
+
+    # if books == []:
+    #     return jsonify()
+    
+    print(books)
+    return jsonify({'books': [dict(book) for book in books], 'status':200})

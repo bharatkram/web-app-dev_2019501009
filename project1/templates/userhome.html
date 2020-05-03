@@ -7,7 +7,7 @@
     }
 
     /* Add padding to containers */
-    .container {
+    #container {
         padding: 16px;
         background-color: white;
         border-radius: 10px;
@@ -67,10 +67,66 @@
 
 {% endblock %}
 
-{% block heading %}{% endblock %}
+{% block heading %}
+    <script>
+        var sel = "title"
+        function myfunction(val) {
+            console.log(val)
+            sel = val
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.btn').onclick = function() {
+                const request = new XMLHttpRequest()
+                const str = document.getElementById('str').value
+                request.open('POST', '/api/search')
+
+                const data = new FormData()
+                data.append('sel', sel)
+                data.append('str', str)
+                request.send(data)
+                console.log("here")
+
+                request.onload = () => {
+
+                    const data = JSON.parse(request.responseText)
+                    console.log(data.status)
+
+                    if (data.status == 200) {
+                        const books = data.books
+                        for (let i = 0; i < books.length; i++) {
+                            var btn = document.createElement("button")
+                            var bname = document.createElement("h2")
+                            bname.innerHTML = books[i].title
+                            btn.appendChild(bname)
+                            var relation = document.createElement("P")
+                            relation.innerHTML = "written by"
+                            btn.appendChild(relation)
+                            var auth = document.createElement("h3")
+                            auth.innerHTML = books[i].author
+                            btn.appendChild(auth)
+                            
+                            btn.classList.add('card')
+                            btn.value = books[i].isbn
+                            btn.onclick = function() {
+                                console.log(this.value)
+                            }
+                            
+                            document.getElementById("container").appendChild(btn)
+                        }
+                    } else {
+                        document.querySelector('#container').innerHTML = "No books found."
+                    }
+                }
+
+                return false
+            }
+        })
+    </script>
+{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div id="container">
         <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
         <h2>Search Results</h2>
         {% if not empty %}
@@ -87,13 +143,23 @@
             <h3>No books match the request.</h3>
         {% endif %}
     </div>
-    <div class="search">
+    <!-- <div class="search">
         <h2>Search</h2>
-        <form action = "{{ url_for('userhome') }}" method = "POST">
+        <form id = "form" action = "{{ url_for('userhome') }}" method = "POST">
             <input type="text" placeholder="Search.." name="str" style="width:80%" required>
             <label for="title" style="white-space:nowrap"> <input type="radio" name="sel" value="title" checked> Title</label>
             <label for="author" style="white-space:nowrap"> <input type="radio" name="sel" value="author"> Author</label>
             <label for="isbn" style="white-space:nowrap"> <input type="radio" name="sel" value="isbn"> ISBN</label>
+            <input name="but" type="submit" class="btn">
+        </form>
+    </div> -->
+    <div class="search">
+        <h2>Search</h2>
+        <form id = "form">
+            <input type="text" placeholder="Search.." id = "str" name="str" style="width:80%" required>
+            <label for="title" style="white-space:nowrap"> <input type="radio" onclick = "myfunction(this.value)" name="sel" value="title" checked> Title</label>
+            <label for="author" style="white-space:nowrap"> <input type="radio" onclick = "myfunction(this.value)" name="sel" value="author"> Author</label>
+            <label for="isbn" style="white-space:nowrap"> <input type="radio" onclick = "myfunction(this.value)" name="sel" value="isbn"> ISBN</label>
             <input name="but" type="submit" class="btn">
         </form>
     </div>

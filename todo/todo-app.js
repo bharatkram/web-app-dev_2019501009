@@ -1,77 +1,83 @@
-const {Component} = React
+import React from 'react';
+import {View, Button, Text, ScrollView, StyleSheet, Switch, TextInput} from 'react-native'
+import {Constants} from 'expo'
 
-class TodoList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {list: props.list};
+let id = 0
 
-        this.handleAddTask = this.handleAddTask.bind(this);
-        this.handleDelTask = this.handleDelTask.bind(this);
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  part: {
+    flex: 1,
+  },
+  button: {
+    width:'20%',
+  },
+  textinput: {
+    padding:5,
+    borderColor:'black',
+    borderWidth:2,
+    width:'75%',
+  }
+})
+
+const Todo = props => (
+  <View style={styles.container}>
+    <Button onPress={props.onDelete} title="delete" />
+    <Text>{props.todo.text}</Text>
+  </View>
+)
+
+export default class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      task: "",
+      todos: [],
     }
-    handleAddTask(task) {
-        console.log("add task clicked");
-        this.state.list.push(task);
-        this.setState({list: this.state.list})
+  }
+
+  handleText = (text) => {
+    this.setState({task:text})
+  }
+
+  addTodo() {
+    if (this.state.task != "") {
+    id++
+    const text = this.state.task
+    this.setState({
+      todos: [
+        ...this.state.todos,
+        {id: id, text: text, checked: false},
+      ], 
+    })
     }
-    handleDelTask(id) {
-        console.log("del task clicked")
-        this.setState(state => {
-            const list = state.list.filter((task) => id != task.id)
-            return {list:list}
-        })
-    }
-    render() {
-        return (
-            <div>
-                <h1>TODO List</h1>
-                <ol>
-                    {
-                        this.state.list.map((t) =>
-                            <li>{t.name}, {t.dueDate.toLocaleTimeString()} <button onClick={this.handleDelTask.bind(this, t.id)}>Delete</button></li>)
-                    }
-                </ol>
-                <TaskNameForm onAddTask={this.handleAddTask} />
-            </div>
-        );
-    }
+  }
+
+  removeTodo(id) {
+    this.setState({
+      todos: this.state.todos.filter(todo => todo.id !== id)
+    })
+  }
+
+  render() {
+    return (
+      <View style={[styles.part]}>
+        <View style = {styles.container}>
+          <View style={[styles.textinput]}><TextInput placeholder="ToDo Activity..." onChangeText={this.handleText}/></View>
+          <View style={[styles.button]}><Button onPress={() => this.addTodo()} title="Add" /></View>
+        </View>
+        <ScrollView style={styles.part}>
+          {this.state.todos.map(todo => (
+            <Todo
+              onDelete={() => this.removeTodo(todo.id)}
+              todo={todo}
+            />
+          ))}
+        </ScrollView>
+      </View>
+    )
+  }
 }
-
-class TaskNameForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: ''};
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleSubmit(event) {
-        const taskList = this.props.taskList;
-        // create a task object
-        event.preventDefault();
-        const task = {id:Date.now(), name: this.state.value, 
-        dueDate: new Date()};
-        // add the task object to the task list
-        this.props.onAddTask(task);
-    }
-
-    handleChange(event) {
-        // code to set the state of the component
-        this.setState({value: event.target.value});
-    }
-
-    render() {
-        return(
-            <form onSubmit={this.handleSubmit}>
-                <input type="text" value={this.state.value} 
-                    onChange={this.handleChange}/>
-                <input type="submit" value="Add Task" />
-            </form>
-        );
-    }
-}
-
-ReactDOM.render(
-    <TodoList list={[]} />,
-    document.getElementById('todo')
-);

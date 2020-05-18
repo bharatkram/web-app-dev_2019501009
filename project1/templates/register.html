@@ -106,7 +106,7 @@
             if (!notEmpty(username, password)) {
                 alert("Username and password fields cannot be empty.")
                 document.myform.usr.focus()
-                return false
+                return true
             }
             if (!checkUsername(username)) {
                 alert("Username should be a valid email address.")

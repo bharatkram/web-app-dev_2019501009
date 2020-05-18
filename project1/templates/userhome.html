@@ -7,7 +7,7 @@
     }
 
     /* Add padding to containers */
-    .container {
+    #container {
         padding: 16px;
         background-color: white;
         border-radius: 10px;
@@ -63,15 +63,139 @@
         text-align: center;
         background-color: #ccc;
         border-radius: 5px;
+        cursor: pointer;
     }
 
 {% endblock %}
 
-{% block heading %}{% endblock %}
+{% block heading %}
+    <script>
+        var sel = "title"
+        function myfunction(val) {
+            console.log(val)
+            sel = val
+        }
+
+        function clear() {
+            var heading = document.createElement("h2")
+            heading.innerHTML = "Search Results"
+            document.getElementById("container").innerHTML = ""
+            document.getElementById("container").appendChild(heading)
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.btn').onclick = function() {
+                const request = new XMLHttpRequest()
+                const str = document.getElementById('str').value
+                request.open('POST', '/api/search')
+
+                const data = new FormData()
+                data.append('sel', sel)
+                data.append('str', str)
+                request.send(data)
+                console.log("here")
+
+                request.onload = () => {
+                    clear()
+
+                    const data = JSON.parse(request.responseText)
+                    console.log(data.status)
+
+                    if (data.status == 200) {
+                        const books = data.books
+                        for (let i = 0; i < books.length; i++) {
+                            var btn = document.createElement("button")
+                            var bname = document.createElement("h2")
+                            bname.innerHTML = books[i].title
+                            btn.appendChild(bname)
+                            var relation = document.createElement("P")
+                            relation.innerHTML = "written by"
+                            btn.appendChild(relation)
+                            var auth = document.createElement("h3")
+                            auth.innerHTML = books[i].author
+                            btn.appendChild(auth)
+                            
+                            btn.classList.add('card')
+                            btn.value = books[i].isbn
+                            btn.onclick = function() {
+                                bookPage(this.value)
+                            }
+                            
+                            document.getElementById("container").appendChild(btn)
+                        }
+                    } else {
+                        var para = document.createElement('P')
+                        para.innerHTML = "No books found."
+                        document.querySelector('#container').appendChild(para)
+                    }
+                }
+
+                return false
+            }
+        })
+        
+        function bookPage(isbn){
+            const request = new XMLHttpRequest();
+            request.open("POST", "/api/book_page/" + isbn);
+            request.send()
+            request.onload = () => {
+                const response = JSON.parse(request.responseText)
+                console.log(response)
+                book = response.book
+                if (response["status"] == 200) {
+                    const row = document.createElement("div")
+                    row.setAttribute("class", "row");
+                    
+                    let overlay = document.createElement("div")
+                    overlay.setAttribute("class", "overlay")
+                    overlay.style.padding = "25px"
+
+                    let title = document.createElement("h3")
+                    title.setAttribute("class", "title")
+                    title.innerHTML = `${book.title}`
+
+                    let author = document.createElement("h6")
+                    author.setAttribute("class", "text")
+                    author.innerHTML = `Author: ${book.author}`
+
+                    let year = document.createElement("p")
+                    year.setAttribute("class", "text")
+                    year.innerHTML = `Year: ${book.pub_year}`
+
+
+                    imageurl = "http://covers.openlibrary.org/b/isbn/"+book.isbn+"-M.jpg"
+
+
+                    let im = document.createElement("IMG");
+                    im.setAttribute("src", imageurl);
+                    im.setAttribute("width", "40%");
+                    im.setAttribute("alt", book.title);
+
+                    overlay.appendChild(title)
+                    overlay.appendChild(im)
+                    overlay.appendChild(author)
+                    overlay.appendChild(year)
+
+                    row.appendChild(overlay)
+
+                    document.getElementById("container").innerHTML = ""
+                    document.querySelector('#container').appendChild(row)
+
+                    addrev(isbn)
+                } else {
+                    var para = document.createElement('h4')
+                    para.innerHTML = "No books found."
+                    document.querySelector('#container').appendChild(para)
+                }
+
+            }
+        }
+
+    </script>
+{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <a class = "logout" href = "{{ url_for('logout') }}">Log Out</a>
+    <div id="container">
         <h2>Search Results</h2>
         {% if not empty %}
             {% for book in books: %}
@@ -87,13 +211,23 @@
             <h3>No books match the request.</h3>
         {% endif %}
     </div>
-    <div class="search">
+    <!-- <div class="search">
         <h2>Search</h2>
-        <form action = "{{ url_for('userhome') }}" method = "POST">
+        <form id = "form" action = "{{ url_for('userhome') }}" method = "POST">
             <input type="text" placeholder="Search.." name="str" style="width:80%" required>
             <label for="title" style="white-space:nowrap"> <input type="radio" name="sel" value="title" checked> Title</label>
             <label for="author" style="white-space:nowrap"> <input type="radio" name="sel" value="author"> Author</label>
             <label for="isbn" style="white-space:nowrap"> <input type="radio" name="sel" value="isbn"> ISBN</label>
+            <input name="but" type="submit" class="btn">
+        </form>
+    </div> -->
+    <div class="search">
+        <h2>Search</h2>
+        <form id = "form">
+            <input type="text" placeholder="Search.." id = "str" name="str" style="width:80%" required>
+            <label for="title" style="white-space:nowrap"> <input type="radio" onclick = "myfunction(this.value)" name="sel" value="title" checked> Title</label>
+            <label for="author" style="white-space:nowrap"> <input type="radio" onclick = "myfunction(this.value)" name="sel" value="author"> Author</label>
+            <label for="isbn" style="white-space:nowrap"> <input type="radio" onclick = "myfunction(this.value)" name="sel" value="isbn"> ISBN</label>
             <input name="but" type="submit" class="btn">
         </form>
     </div>

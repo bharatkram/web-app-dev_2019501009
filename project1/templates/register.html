@@ -59,7 +59,70 @@
     }
 {% endblock %}
 
-{% block heading %}{% endblock %}
+{% block heading %}
+    <script type = "text/javascript">
+        function notEmpty(username, password) {
+            return username != "" && password != ""
+        }
+
+        function checkUsername(username) {
+            arr = username.split("@")
+            if (arr.length == 2) {
+                domain = arr[1].split(".")
+                if (domain.length == 2) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        function checkPassword(password) {
+            if (password.length < 6) {
+                return false
+            }
+            upper = false
+            lower = false
+            number = false
+            symbol = false
+            for (let i = 0; i < password.length; i++) {
+                code = password.charCodeAt(i)
+                if (code >= 65 && code <= 90) {
+                    upper = true
+                } else if (code >= 97 && code <= 122) {
+                    lower = true
+                } else if (code >= 48 && code <= 57) {
+                    number = true
+                } else {
+                    symbol = true
+                }
+            }
+            return upper && lower && number && symbol
+        }
+
+        function validate() {
+            username = document.myform.usr.value
+            password = document.myform.psw.value
+
+            if (!notEmpty(username, password)) {
+                alert("Username and password fields cannot be empty.")
+                document.myform.usr.focus()
+                return true
+            }
+            if (!checkUsername(username)) {
+                alert("Username should be a valid email address.")
+                document.myform.usr.focus()
+                return false
+            }
+            if (!checkPassword(password)) {
+                alert("Password must contain a upper case letter, a lower case letter, a number and a symbol.")
+                document.myform.psw.focus()
+                return false
+            }
+            return true
+        }
+
+    </script>
+{% endblock %}
 
 {% block body %}
     {% if act == 1 %}
@@ -71,7 +134,7 @@
     </div>
     {% else %}
         <div class="registration">
-            <form action = "{{ url_for('register') }}" method = "POST">
+            <form action = "{{ url_for('register') }}" name = "myform" method = "POST" onsubmit="return validate()">
                 <div class="container">
                     {% if act == 0 %}
                         <h1>Register</h1>
@@ -84,10 +147,10 @@
                     <hr>
 
                     <label for="usr"><b>Username</b></label>
-                    <input type="text" placeholder="Enter Username" name="usr" required>
+                    <input type="text" placeholder="Enter Username" name="usr">
 
                     <label for="psw"><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="psw" required>
+                    <input type="password" placeholder="Enter Password" name="psw">
 
                     <hr>
                     <input name="but" type = "submit" value = "Login" class="btn" formaction="{{ url_for('auth') }}">
